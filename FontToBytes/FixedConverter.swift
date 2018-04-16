@@ -141,18 +141,19 @@ class FixedConverter: ModeConverter {
                     while remainingBits > 0 {
                         var byte: UInt8 = 0
                         let bitCount = min(remainingBits, 8)
+                        var mask: UInt8 = 1<<7
                         for bit in 0..<bitCount {
-                            byte <<= 1
                             switch self.direction {
                             case .topDown:
                                 if inputImage.isPixelSet(x: x*width+bit+8*byteIndex, y: y*height+row) {
-                                    byte |= 1
+                                    byte |= mask
                                 }
                             case .leftRight:
                                 if inputImage.isPixelSet(x: x*height+row, y: y*width+bit+8*byteIndex) {
-                                    byte |= 1
+                                    byte |= mask
                                 }
                             }
+                            mask >>= 1
                             remainingBits -= 1
                         }
                         byteWriter.writeByte(byte)
